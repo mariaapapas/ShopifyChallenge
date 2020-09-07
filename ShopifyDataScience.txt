@@ -1,0 +1,37 @@
+Question 1
+
+On Shopify, we have exactly 100 sneaker shops, and each of these shops sells only one model of shoe. We want to do some analysis of the average order value (AOV). When we look at orders data over a 30 day window, we naively calculate an AOV of $3145.13. Given that we know these shops are selling sneakers, a relatively affordable item, something seems wrong with our analysis.
+
+a) Think about what could be going wrong with our calculation. Think about a better way to evaluate this data.
+
+After analyzing the dataset, it is evident that there are some extreme outliers present. More specifically, after ordering the data from smallest to largest, there are only 71 records with order_amount above 1000, which is 1.4% of the total 5000 records. These orders with large order amounts could be a result of limited edition sales, or even bulk purchases, which are less common scenarios. A more appropriate approach to evaluate this data would be to either remove the extreme outliers from the dataset, or use the median as an indicator as its value is not heavily skewed by the outliers.
+
+b) What metric would you report for this dataset?
+
+For this dataset, the more appropriate metric would be the median. In this case, the average is significantly influenced by the few large values, making it unrepresentitive of the majority of values in the data set, causing the AOV to be larger. Under these circumstances, median gives a better representation of central tendency than the average.
+
+c) What is its value?
+
+The Average Order Value (AOV) of this dataset is best represented by the median, with a value of 284.
+
+Question 2
+
+For this question you’ll need to use SQL. Follow this link to access the data set required for the challenge. Please use queries to answer the following questions. Paste your queries along with your final numerical answers below.
+
+a) How many orders were shipped by Speedy Express in total?
+
+SELECT COUNT(*) as NumOrders FROM OrdersINNER JOIN ShippersON Orders.ShipperID = Shippers.ShipperIDWHERE Shippers.ShipperName = "Speedy Express"
+
+A total of 54 orders were shipped by Speedy Express.
+
+b) What is the last name of the employee with the most orders?
+
+SELECT LastName, MAX(NumOrders) FROM (SELECT LastName, COUNT(*) as NumOrders FROM OrdersINNER JOIN EmployeesON Orders.EmployeeID = Employees.EmployeeIDGROUP BY LastName)
+
+The last name of the employee with the most orders is Peacock with a total of 40 orders.
+
+c) What product was ordered the most by customers in Germany?
+
+SELECT ProductName, MAX(TotalQuantity) FROM (SELECT ProductName, SUM(Quantity) AS TotalQuantity FROM OrderDetailsINNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderIDINNER JOIN Products ON OrderDetails.ProductID = Products.ProductIDINNER JOIN Customers ON Orders.CustomerID = Customers.CustomerIDWHERE Country = "Germany" GROUP BY ProductName)
+
+The product ordered the most by customers in Germany was Boston Crab Meat with a total of 160 orders.
